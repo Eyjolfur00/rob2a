@@ -22,46 +22,68 @@
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++| MAIN |+++++++++++++++++++++++++++++++++++++++++++++++
-task main()
-{
-	while(true) {
-		
-		while(SensorValue(lightSensor) < 100)
-		{
-			motor[rightMotor] = 0;
-			motor[leftMotor] = 0;
-			wait10Msec(10);
+int Darkness() {
+		if (SensorValue(lightSensor) > 400) {
+				return 1;
+		} else {
+				return 0;
 		}
-		while(SensorValue(lightSensor) > 100)
-		{
+}
+bool IsSensorSafe(){
+		if (SensorValue(sonarSensor) > 35  || SensorValue(sonarSensor) == -1) {
+				return true;
+		} else {
+				return false;
+		}
+}
+void drive_Forward(){
 			if(SensorValue[RightEncoder] == -SensorValue[LeftEncoder]) {
-				motor[rightMotor] = -70;
-				motor[leftMotor]  = -70;
+				motor[rightMotor] = 60;
+				motor[leftMotor]  = 60;
 			}
 			else if(SensorValue[RightEncoder] > -SensorValue[LeftEncoder]) {
-				motor[rightMotor] = -50;
-				motor[leftMotor]  = -70;
+				motor[rightMotor] = 40;
+				motor[leftMotor]  = 60;
 			}
 			else {
-				motor[rightMotor] = -70;
-				motor[leftMotor]  = -50;
+				motor[rightMotor] = 60;
+				motor[leftMotor]  = 40;
 			}
-			
-			if (vexRT[Btn7U] == 1) {
-  			break;
-			}
+}
+void turnAround() {
+		motor[rightMotor] = -54;
+		motor[leftMotor] = -54;
+		wait1Msec(500);
+		motor[rightMotor] = -40;
+		motor[leftMotor] = 40;
+		wait1Msec(300);
+		while (SensorValue(sonarSensor) < 100 || SensorValue(sonarSensor) == -1) {
+				motor[rightMotor] = -60;
+				motor[leftMotor] = 60;
+		}
+}
+
+
+
+
+task main()
+{
+  while(true) {
+  		if (Darkness()) {
+		  		while (Darkness()) {
+			  			motor[rightMotor] = 0;
+							motor[leftMotor]  = 0;
+							wait10Msec(10);
+			  	}
+		  }
+  	 	if (IsSensorSafe()){
+  	 			drive_Forward();
+  		}
+  		if (vexRT[Btn7U] == 1) {
+  				break;
   	 	}
-  	 	while (true){
-	  	 	motor[rightMotor] = -64;
-				motor[leftMotor] = -64;
-				wait1Msec(500);
-				motor[rightMotor] = -50;
-				motor[leftMotor] = 50;
-				wait1Msec(300);
-				while (SensorValue(sonarSensor) < 100 || SensorValue(sonarSensor) == -1) {
-					motor[rightMotor] = -70;
-					motor[leftMotor] = 70;
-				}
+  		else{
+  				turnAround();
   		}
 	}
 }
