@@ -68,20 +68,20 @@ void turnAround() {
 task main()
 {
   while(true) {
-			if (Darkness()) {
-		  		while (Darkness()) {
-			  			motor[rightMotor] = 0;
-									motor[leftMotor]  = 0;
-									wait10Msec(10);
+		if (Darkness()) {
+		  	while (Darkness()) {
+			  		motor[rightMotor] = 0;
+						motor[leftMotor]  = 0;
+							wait10Msec(10);
 			  	}
 			}
   	 	if (IsSensorSafe()){
-  	 			drive_Forward();
+  	 		drive_Forward();
   		}
   		if (vexRT[Btn7U] == 1) {
-  				break;
+  			break;
   	 	}else{
-  				turnAround();
+  			turnAround();
   		}
 	}
 }
